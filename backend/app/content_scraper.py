@@ -210,19 +210,20 @@ class ContentScraper:
                                 except Exception as e:
                                     pass
                             if not post_links:
-                                # Fallback: extract all <h1> and <h2> sections as articles
+                                # Improved fallback: extract all <h1> and <h2> sections as articles, grouping siblings until next header
                                 headers = soup.find_all(['h1', 'h2'])
-                                for header in headers:
+                                for i, header in enumerate(headers):
                                     title = self._clean_text(header.get_text())
-                                    # Try to get the next sibling or parent block as content
-                                    content_block = header.find_next_sibling()
                                     content = ""
-                                    if content_block:
-                                        content = self._clean_text(content_block.get_text())
-                                    if title and content:
+                                    for sibling in header.next_siblings:
+                                        if getattr(sibling, 'name', None) in ['h1', 'h2']:
+                                            break
+                                        if hasattr(sibling, 'get_text'):
+                                            content += " " + self._clean_text(sibling.get_text())
+                                    if title and content.strip():
                                         items.append({
                                             "title": title,
-                                            "content": content,
+                                            "content": content.strip(),
                                             "content_type": "blog",
                                             "source_url": base_url,
                                             "author": "",
