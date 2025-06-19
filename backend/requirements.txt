@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+python-multipart
+requests
+beautifulsoup4
+selenium
+PyPDF2
+markdownify
+python-dotenv
+feedparser
+lxml
+webdriver-manager
+tqdm
+readability-lxml
+pdfminer.six
+PyMuPDF 
