@@ -229,17 +229,26 @@ export default function Home() {
                 <span style={{ fontWeight: 'bold', fontSize: '1.2em' }}>Processing...</span>
               </div>
             )}
+            {/* Completed Indicator */}
+            {!loading && output && (
+              <div style={{ margin: '20px 0', textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '1.2em', color: '#22c55e', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                  Completed!
+                </span>
+              </div>
+            )}
           </form>
           {error && <div style={{ color: "#dc2626", marginBottom: 16, fontWeight: 500 }}>{error}</div>}
           {output && (
             <div style={{ marginTop: 32 }}>
               <h3 style={{ color: "#6366f1", fontWeight: 700, fontSize: 22, marginBottom: 12 }}>Output JSON</h3>
-              <pre style={{ background: "#f4f4f4", padding: 18, borderRadius: 10, maxHeight: 400, overflow: "auto", fontSize: 15 }}>{output}</pre>
-              <div style={{ display: "flex", gap: 16, marginTop: 16 }}>
-                <button onClick={handleDownloadJson} style={{ padding: "0.6rem 1.5rem", background: "#60a5fa", color: "#fff", border: "none", borderRadius: 7, fontWeight: 600, fontSize: 16, cursor: "pointer" }}>
+              <pre style={{ background: "#f4f4f4", padding: 18, borderRadius: 10, maxHeight: 400, overflow: "auto", fontSize: 15, color: '#000', wordBreak: 'break-word', whiteSpace: 'pre-wrap', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>{output}</pre>
+              <div style={{ display: "flex", flexWrap: 'wrap', gap: 16, marginTop: 16 }}>
+                <button onClick={handleDownloadJson} style={{ padding: "0.6rem 1.5rem", background: "#60a5fa", color: "#fff", border: "none", borderRadius: 7, fontWeight: 600, fontSize: 16, cursor: "pointer", marginBottom: 8 }}>
                   Download JSON
                 </button>
-                <button onClick={handleDownloadMarkdown} style={{ padding: "0.6rem 1.5rem", background: "#6366f1", color: "#fff", border: "none", borderRadius: 7, fontWeight: 600, fontSize: 16, cursor: "pointer" }}>
+                <button onClick={handleDownloadMarkdown} style={{ padding: "0.6rem 1.5rem", background: "#6366f1", color: "#fff", border: "none", borderRadius: 7, fontWeight: 600, fontSize: 16, cursor: "pointer", marginBottom: 8 }}>
                   Download Markdown (.md)
                 </button>
               </div>
