@@ -72,8 +72,10 @@ export default function Home() {
         } catch {
           setOutputJson(null);
         }
+        setLoading(false);
       } else {
         setError("Failed to fetch output");
+        setLoading(false);
       }
     } catch (err: any) {
       setError(err.message || "Unknown error");
