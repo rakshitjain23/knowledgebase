@@ -223,17 +223,10 @@ export default function Home() {
             }}>
               {loading ? "Processing..." : "Import"}
             </button>
+            {/* Progress/Loading Indicator */}
             {loading && (
-              <div style={{ marginTop: 24 }}>
-                <div style={{ height: 10, background: "#e0e7ff", borderRadius: 5, overflow: "hidden" }}>
-                  <div style={{ width: `${progress}%`, height: 10, background: "#6366f1", transition: "width 0.2s" }} />
-                </div>
-                <div style={{ marginTop: 8, fontSize: 14, color: "#6366f1" }}>
-                  Uploading... {progress}%
-                </div>
-                <div style={{ marginTop: 4, fontSize: 13, color: "#64748b" }}>
-                  Processing may take a few minutes depending on the number of sources and pages.
-                </div>
+              <div style={{ margin: '20px 0', textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '1.2em' }}>Processing...</span>
               </div>
             )}
           </form>
