@@ -149,30 +149,36 @@ export default function Home() {
           <form onSubmit={handleSubmit} style={{ marginBottom: 24 }}>
             <div style={{ marginBottom: 24 }}>
               <label style={{ fontWeight: 600, color: "#6366f1" }}>Upload PDF(s):</label>
-              <input
-                type="file"
-                accept="application/pdf"
-                multiple
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                style={{ display: "block", marginTop: 8 }}
-              />
-              {files.length > 0 && (
-                <table style={{ width: "100%", marginTop: 12, fontSize: 15, borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ background: "#f3f4f6" }}>
-                      <th align="left" style={{ padding: 6, borderRadius: 6 }}>File</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {files.map((file) => (
-                      <tr key={file.name} style={{ borderBottom: "1px solid #e5e7eb" }}>
-                        <td style={{ padding: 6 }}>{file.name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    padding: '0.5rem 1.2rem',
+                    background: '#6366f1',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 7,
+                    fontWeight: 600,
+                    fontSize: 15,
+                    cursor: 'pointer',
+                    boxShadow: '0 1px 4px rgba(99,102,241,0.08)'
+                  }}
+                >
+                  Choose Files
+                </button>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  multiple
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                />
+                <span style={{ color: '#000', fontSize: 14 }}>
+                  {files.length === 0 ? 'No file chosen' : files.map(f => f.name).join(', ')}
+                </span>
+              </div>
             </div>
             <div style={{ marginBottom: 24 }}>
               <label style={{ fontWeight: 600, color: "#6366f1" }}>Blog URL(s):</label>
@@ -186,13 +192,13 @@ export default function Home() {
                 <table style={{ width: "100%", marginTop: 12, fontSize: 15, borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ background: "#f3f4f6" }}>
-                      <th align="left" style={{ padding: 6, borderRadius: 6 }}>URL</th>
+                      <th align="left" style={{ padding: 6, borderRadius: 6, color: '#000' }}>URL</th>
                     </tr>
                   </thead>
                   <tbody>
                     {urls.map((url) => (
                       <tr key={url} style={{ borderBottom: "1px solid #e5e7eb" }}>
-                        <td style={{ padding: 6, wordBreak: "break-all" }}>{url}</td>
+                        <td style={{ padding: 6, wordBreak: "break-all", color: '#000' }}>{url}</td>
                       </tr>
                     ))}
                   </tbody>
