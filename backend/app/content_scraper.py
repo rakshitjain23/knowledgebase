@@ -168,9 +168,10 @@ class ContentScraper:
             return []
     
     def scrape_blog_pages(self, base_url: str, max_pages: int = 10) -> List[Dict]:
-        """Scrape blog posts by crawling pages. Uses Selenium if no links found with requests."""
+        """Scrape blog posts by crawling pages. Uses Selenium if no links found with requests. Fallback: extract all articles from main page."""
         items = []
         page = 1
+        found_any = False
         while page <= max_pages:
             try:
                 # Try different pagination patterns
@@ -189,7 +190,6 @@ class ContentScraper:
                             all_links = [link['href'] for link in soup.find_all('a', href=True)]
                             post_links = []
                             for href in all_links:
-                                # Only keep likely blog post links
                                 if href.startswith('/blog/') and len(href) > len('/blog/'):
                                     full_url = urljoin(base_url, href)
                                     post_links.append(full_url)
@@ -210,6 +210,25 @@ class ContentScraper:
                                 except Exception as e:
                                     pass
                             if not post_links:
+                                # Fallback: extract all <h1> and <h2> sections as articles
+                                headers = soup.find_all(['h1', 'h2'])
+                                for header in headers:
+                                    title = self._clean_text(header.get_text())
+                                    # Try to get the next sibling or parent block as content
+                                    content_block = header.find_next_sibling()
+                                    content = ""
+                                    if content_block:
+                                        content = self._clean_text(content_block.get_text())
+                                    if title and content:
+                                        items.append({
+                                            "title": title,
+                                            "content": content,
+                                            "content_type": "blog",
+                                            "source_url": base_url,
+                                            "author": "",
+                                            "user_id": ""
+                                        })
+                                found_any = True
                                 break
                             for link in tqdm(post_links, desc=f"Scraping page {page}"):
                                 item = self.scrape_blog_url(link)
@@ -217,6 +236,7 @@ class ContentScraper:
                                     items.append(item)
                                 time.sleep(1)
                             page_scraped = True
+                            found_any = True
                             break
                     except Exception as e:
                         continue
