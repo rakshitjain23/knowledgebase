@@ -16,7 +16,8 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+  const rawBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+  const backendUrl = rawBackendUrl.replace(/\/$/, "");
 
   // Handle file input and initialize team IDs
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,29 +60,21 @@ export default function Home() {
       formData.append("urls", urls.join("\n"));
       formData.append("max_pages", String(maxPages));
       formData.append("source_team_map", JSON.stringify(sourceTeamMap));
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", `${backendUrl}/scrape-all`, true);
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          setProgress(Math.round((event.loaded / event.total) * 100));
+      const response = await fetch(`${backendUrl}/scrape-all`, {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        const text = await response.text();
+        setOutput(text);
+        try {
+          setOutputJson(JSON.parse(text));
+        } catch {
+          setOutputJson(null);
         }
-      };
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          setLoading(false);
-          if (xhr.status === 200) {
-            setOutput(xhr.responseText);
-            try {
-              setOutputJson(JSON.parse(xhr.responseText));
-            } catch {
-              setOutputJson(null);
-            }
-          } else {
-            setError("Failed to fetch output");
-          }
-        }
-      };
-      xhr.send(formData);
+      } else {
+        setError("Failed to fetch output");
+      }
     } catch (err: any) {
       setError(err.message || "Unknown error");
       setLoading(false);
